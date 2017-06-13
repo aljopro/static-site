@@ -11,11 +11,13 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-data": "^1.2.1",
-    "gulp-debug": "^3.1.0",
+    "gulp-flatmap": "^1.0.0",
     "gulp-gray-matter": "^3.0.1",
     "gulp-if": "^2.0.2",
     "gulp-markdown": "^1.2.0",
     "gulp-nunjucks-render": "^2.2.1",
+    "gulp-server-livereload": "^1.9.2",
+    "gulp-util": "^3.0.8",
     "through2": "^2.0.3"
   }
 }

@@ -1,0 +1,11 @@
+
+<div class="navigation">
+{% for item in navigation %}
+	<a class="navigation-item" href="{{item.permalink}}">{{item.title}}</a>
+	{% if item.navigation and item.navigation.length > 0 %}
+		{% set item %}
+			{%include "navigation.njk" %}
+		{% endset %}
+	{% endif %}
+{% endfor %}
+</div>

@@ -1,0 +1,11 @@
+{% extends "layouts/default-layout.njk" %}
+{% block body %}
+{% if navigation and navigation.length > 0 %}
+<div id="main_navigation" role="navigation">
+	{%include "partials/navigation.njk" %}
+</div>
+{% endif %}
+<div id="main_content" role="main">
+	{{contents | safe}}
+</div>
+{% endblock %}

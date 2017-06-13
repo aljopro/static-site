@@ -20,7 +20,7 @@ function getTemplate(options) {
 
 		let filePath = file.path;
 
-		if(file.data.path) {
+		if(file.data.permalink) {
 			filePath = path.join(path.dirname(file.path), file.data.permalink);
 		}
 
@@ -29,6 +29,5 @@ function getTemplate(options) {
 		cb(null, file);
 	});
 }
-
 
 module.exports = getTemplate;
