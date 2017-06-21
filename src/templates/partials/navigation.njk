@@ -1,11 +1,17 @@
-
-<div class="navigation">
-{% for item in navigation %}
-	<a class="navigation-item" href="{{item.permalink}}">{{item.title}}</a>
-	{% if item.navigation and item.navigation.length > 0 %}
-		{% set item %}
-			{%include "navigation.njk" %}
-		{% endset %}
-	{% endif %}
-{% endfor %}
-</div>
+{% macro nav(navigation) %}
+	<div class="style-guide-navigation">
+		{% for item in navigation %}
+			<div class="style-guide-navigation-item">
+				{% if item.permalink %}
+					<a class="style-guide-navigation-item-text" href="{{item.permalink}}">{{item.title}}</a>
+				{% else %}
+					<span class="style-guide-navigation-item-text">{{item.title}}</span>
+				{% endif %}
+				{% if item.navigation and item.navigation.length > 0 %}
+					{{ nav( item.navigation ) }}
+				{% endif %}
+			</div>
+		{% endfor %}
+	</div>
+{% endmacro %}
+{{ nav( navigation )}}

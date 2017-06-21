@@ -3,12 +3,6 @@ const gutil = require('gulp-util');
 const flatmap = require('gulp-flatmap');
 const path = require('path');
 
-function findParent(navItem) {
-	return flat.find((_nav) => {
-		return _nav.title === navItem.parent;
-	});
-}
-
 function compareNavItems(a, b) {
 	if (a.order === b.order) {
 		return a.title.toLocaleLowerCase().localeCompare(b.title.toLocaleLowerCase());
@@ -16,52 +10,66 @@ function compareNavItems(a, b) {
 	return a.order - b.order;
 }
 
-function NavigationBuilder() {
-	this.navigation = [];
-	this.flat = [];
-	this.orphaned = [];
-
-	const init = (file) => {
-		const data = file.data;
-		const baseName = path.basename(file.path, path.extname(file.path));
-		const navItem = {
-			title: file.data.title || baseName,
-			parent: file.data.parent || null,
-			permalink: file.data.permalink || path.relative('./', baseName  + '.html'),
-			order: file.data.order || Number.MAX_VALUE,
-			navigation: []
-		}
-		this.flat.push(navItem);
-
-		if (navItem.parent) {
-			const parentNav = findParent(navItem);
-			if (parentNav) {
-				parentNav.navigation.push(navItem);
-			} else {
-				this.orphaned.push(navItem);
-			}
-		} else {
-			this.navigation.push(navItem);
-		}
-
-		// If there are orphans associated with this navigation item,
-		// let's pull them into the fold.
-		const foundOrphans = this.orphaned.filter((_nav) => {
-			return _nav.parent === navItem.title
-		});
-		foundOrphans.forEach((orphanedItem) => {
-			navItem.navigation.push(orphanedItem);
-		});
-
-		navItem.navigation.sort(compareNavItems);
-		this.navigation.sort(compareNavItems);
-
-	}
-
-	this.build = flatmap((stream, file) => {
-		init(file);
-		return stream
-	})
+function findNavigationItem(navItem) {
+	return this && this.title === navItem.title
 }
 
-module.exports = NavigationBuilder
+function NavigationBuilder() {
+	const _navigation = [];
+
+	this.build = flatmap((stream, file) => {
+		const data = file.data;
+		data.permalink = data.permalink || path.join(path.dirname(file.path), path.basename(file.path, path.extname(file.path)) + '.html').replace(file.base, '');
+
+		const navigationPath = data.navigationPath;
+		const navigationNodes = navigationPath ? navigationPath.split(' > ').map((node) => new NavigationNode(node)) : [];
+		navigationNodes.push(data);
+
+		let workingNavigation = _navigation;
+
+		navigationNodes.forEach((navigationNode, index, array) => {
+			let navigationItem = workingNavigation.find(findNavigationItem, navigationNode);
+
+			if (!navigationItem) {
+				navigationItem = new NavigationItem(navigationNode);
+				workingNavigation.push(navigationItem);
+			} else {
+				NavigationItem.init(navigationNode, navigationItem);
+			}
+
+			workingNavigation = navigationItem.navigation;
+		});
+		return stream;
+	});
+
+	Object.defineProperty(this, 'navigation', {
+		get: function() {
+			return _navigation;
+		}
+	});
+}
+
+NavigationBuilder.sortNavigation = function(navigation) {
+	navigation.sort(compareNavItems).forEach((navigationItem) => {
+		NavigationBuilder.sortNavigation(navigationItem.navigation);
+	});
+
+	return navigation;
+};
+
+function NavigationItem(data) {
+	NavigationItem.init(data, this);
+}
+
+NavigationItem.init = function(data, navigationItem) {
+	navigationItem.title = data.title || navigationItem.title || null;
+	navigationItem.permalink = data.permalink || navigationItem.permalink || null;
+	navigationItem.order = data.order || navigationItem.order || Number.MAX_VALUE;
+	navigationItem.navigation = data.navigation || navigationItem.navigation || [];
+}
+
+function NavigationNode(title) {
+	this.title = title || null;
+}
+
+module.exports = NavigationBuilder;

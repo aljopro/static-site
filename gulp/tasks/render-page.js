@@ -4,6 +4,7 @@ const gulpGrayMatter = require('gulp-gray-matter');
 const markdown = require('gulp-markdown');
 const data = require('gulp-data');
 const gulpif = require('gulp-if')
+var htmlmin = require('gulp-htmlmin');
 const getTemplate = require('../get-template');
 const NavBuilder = require('../build-navigation');
 const configuration = require('../configuration');
@@ -17,7 +18,6 @@ let navigation = [];
 gulp.task('render-nav', function() {
 	navigation = [];
 	const navBuilder = new NavBuilder();
-
 	const getNavigation = function(file) {
 		navigation = navBuilder.navigation;
 	}
@@ -27,7 +27,11 @@ gulp.task('render-nav', function() {
 		.pipe(data(getNavigation));
 });
 
-gulp.task('render-page', ['render-nav'], function() {
+gulp.task('sort-nav', ['render-nav'], function() {
+	navigation = NavBuilder.sortNavigation(navigation);
+});
+
+gulp.task('render-page', ['sort-nav'], function() {
 	const getDataForFile = function(file) {
 		let data = file.data;
 		data.contents = file.contents.toString();
@@ -39,9 +43,22 @@ gulp.task('render-page', ['render-nav'], function() {
 		.pipe(gulpGrayMatter())
 		.pipe(gulpif(/.*\.md$/, markdown()))
 		.pipe(data(getDataForFile))
-		.pipe(getTemplate({ templateDir: templatesDir }))
+		.pipe(getTemplate({
+			templateDir: templatesDir
+		}))
 		.pipe(nunjucksRender({
-			path: templatesDir
+			path: templatesDir,
+			envOptions: {
+				trimBlocks: true,
+				lstripBlocks: true
+			}
+		}))
+		.pipe(htmlmin({
+			caseSensitive: true,
+			collapseWhitespace: true,
+			conservativeCollapse: true,
+			html5: true,
+			removeComments: true
 		}))
 		.pipe(gulp.dest(distDir));
 });
