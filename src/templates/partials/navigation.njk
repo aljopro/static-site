@@ -3,7 +3,7 @@
 		{% for item in navigation %}
 			<div class="style-guide-navigation-item">
 				{% if item.permalink %}
-					<a class="style-guide-navigation-item-text" href="{{item.permalink}}">{{item.title}}</a>
+					<a class="style-guide-navigation-item-text" href="/{{item.permalink}}">{{item.title}}</a>
 				{% else %}
 					<span class="style-guide-navigation-item-text">{{item.title}}</span>
 				{% endif %}

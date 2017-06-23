@@ -21,7 +21,7 @@ function getTemplate(options) {
 		let filePath = file.path;
 
 		if(file.data.permalink) {
-			filePath = path.join(path.dirname(file.path), file.data.permalink);
+			filePath = path.join(path.resolve(file.base || file.path), file.data.permalink);
 		}
 
 		file.path = filePath;

@@ -1,6 +1,11 @@
 
 module.exports = {
+	sourceDirectory: './src',
 	buildDirectory: './dist',
 	templateDirectory: './src/templates',
-	pageSource: './src/pages/**.*'
+	pageDirectory: './src/pages',
+	pageSource: './src/pages/**/*.*',
+	sassSource: './src/stylesheets/**/*.scss',
+	cssSource: './src/stylesheets/**/*.css'
+
 }

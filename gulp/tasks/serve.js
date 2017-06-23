@@ -7,7 +7,7 @@ gulp.task('serve', ['build','webserver'], function(){
 });
 
 gulp.task('webserver', function() {
-  gulp.src('dist')
+  gulp.src(configuration.buildDirectory)
     .pipe(server({
       livereload: true,
       open: true

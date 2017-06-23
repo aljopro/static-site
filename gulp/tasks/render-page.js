@@ -10,6 +10,7 @@ const NavBuilder = require('../build-navigation');
 const configuration = require('../configuration');
 
 const pageGlob = configuration.pageSource;
+const pageDir = configuration.pageDirectory;
 const templatesDir = configuration.templateDirectory;
 const distDir = configuration.buildDirectory;
 
@@ -34,12 +35,15 @@ gulp.task('sort-nav', ['render-nav'], function() {
 gulp.task('render-page', ['sort-nav'], function() {
 	const getDataForFile = function(file) {
 		let data = file.data;
+		console.log(file.path);
+		console.log(data.permalink);
+
 		data.contents = file.contents.toString();
 		data.navigation = navigation;
 		return data;
 	};
 
-	return gulp.src(pageGlob)
+	return gulp.src(pageGlob, {base: pageDir})
 		.pipe(gulpGrayMatter())
 		.pipe(gulpif(/.*\.md$/, markdown()))
 		.pipe(data(getDataForFile))
