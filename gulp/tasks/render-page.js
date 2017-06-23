@@ -35,8 +35,6 @@ gulp.task('sort-nav', ['render-nav'], function() {
 gulp.task('render-page', ['sort-nav'], function() {
 	const getDataForFile = function(file) {
 		let data = file.data;
-		console.log(file.path);
-		console.log(data.permalink);
 
 		data.contents = file.contents.toString();
 		data.navigation = navigation;

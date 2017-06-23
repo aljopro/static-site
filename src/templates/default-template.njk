@@ -1,11 +1,14 @@
 {% extends "layouts/default-layout.njk" %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/stylesheets/style-guide.css" />
+{% endblock %}
 {% block body %}
 {% if navigation and navigation.length > 0 %}
-<div id="main_navigation" role="navigation">
+<div id="style_guide_main_navigation" role="navigation">
 	{%include "partials/navigation.njk" %}
 </div>
 {% endif %}
-<div id="main_content" role="main">
+<div id="style_guide_main_content" role="main">
 	{{contents | safe}}
 </div>
 {% endblock %}

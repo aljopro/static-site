@@ -4,7 +4,8 @@
 	"layout": "default-template.njk",
 	"published": false,
 	"title": "Home",
-	"tags": []
+	"tags": [],
+	"order": 0
 }
 ---
 

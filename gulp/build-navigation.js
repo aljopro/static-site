@@ -64,7 +64,7 @@ function NavigationItem(data) {
 NavigationItem.init = function(data, navigationItem) {
 	navigationItem.title = data.title || navigationItem.title || null;
 	navigationItem.permalink = data.permalink || navigationItem.permalink || null;
-	navigationItem.order = data.order || navigationItem.order || Number.MAX_VALUE;
+	navigationItem.order = Number.isFinite(data.order) ? data.order : data.order || navigationItem.order || Number.MAX_VALUE;
 	navigationItem.navigation = data.navigation || navigationItem.navigation || [];
 }
 
