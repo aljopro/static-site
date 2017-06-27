@@ -4,7 +4,8 @@ const gulpGrayMatter = require('gulp-gray-matter');
 const markdown = require('gulp-markdown');
 const data = require('gulp-data');
 const gulpif = require('gulp-if')
-var htmlmin = require('gulp-htmlmin');
+const htmlmin = require('gulp-htmlmin');
+const path = require('path');
 const getTemplate = require('../get-template');
 const NavBuilder = require('../build-navigation');
 const configuration = require('../configuration');
@@ -38,6 +39,7 @@ gulp.task('render-page', ['sort-nav'], function() {
 
 		data.contents = file.contents.toString();
 		data.navigation = navigation;
+		data.vendorScripts = configuration.copyVendorModules.map(file => path.join('/scripts/vendor', file));
 		return data;
 	};
 

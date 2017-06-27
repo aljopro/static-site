@@ -12,3 +12,9 @@
 	{{contents | safe}}
 </div>
 {% endblock %}
+{% block script_body %}
+	{% for src in vendorScripts %}
+	<script src="{{ src }}"></script>
+	{% endfor %}
+	<script src="/scripts/app.bundle.js" ></script>
+{% endblock %}
